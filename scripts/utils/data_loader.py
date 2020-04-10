@@ -11,6 +11,15 @@ def load_image(image_file):
     image_rgb = [cv2.resize(i, (150, 150)) for i in image_rgb]
     return image_rgb
 
+def color_list():
+    red_lab = np.array([56, 77, 32])
+    aqua_lab = np.array([91, -48, -10])    
+    green_lab = np.array([73, -61, 30])
+    yellow_lab = np.array([86, -7, 86])
+    
+    colors_lab = np.vstack((red_lab, aqua_lab, green_lab, yellow_lab))
+    return colors_lab
+
 if __name__ == "__main__":
     img = load_image("/Users/gisen/git/color_clustering/data")
     print(type(img))

@@ -6,39 +6,10 @@ import sys
 from sklearn.cluster import KMeans
 from skimage.color import rgb2lab
 
-from utils.data_loader import load_image
+from utils.data_loader import load_image, color_list
 from utils.hist import centroid_histogram
 from utils.visualize import plot_colors
-
-def color_list():
-    red_lab = np.array([56, 77, 32])
-    aqua_lab = np.array([91, -48, -10])    
-    green_lab = np.array([73, -61, 30])
-    yellow_lab = np.array([86, -7, 86])
-    
-    colors_lab = np.vstack((red_lab, aqua_lab, green_lab, yellow_lab))
-    return colors_lab
-
-def cos_sim(v1, v2):
-    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-
-def similarity_calculate(comparison_arrays, lab_arrays):
-    for lab_array in lab_arrays:
-        lab_array = np.array([lab_array])
-        tmp = cos_sim(comparison_arrays, lab_array.reshape(3, 1))
-        max_val = np.max(tmp, axis=0)
-        max_index = np.argmax(tmp, axis=0)
-        if max_index == 0 and max_val >= 0.45:
-            class_name = "red"
-        elif (max_index == 1 or max_index == 2) and max_val >= 0.45:
-            class_name = "blue"
-        elif max_index == 3 and max_val >= 0.45:
-            class_name = "yellow"
-        else:
-            class_name = "unknown"
-
-        print("推論結果: ", max_val, class_name)
-    print("=======")
+from utils.similarity import cos_sim, similarity_calculate
 
 def main(img):
     cmp_lab_arr = color_list()
