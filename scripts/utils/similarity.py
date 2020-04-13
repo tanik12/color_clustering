@@ -1,25 +1,26 @@
 import numpy as np
 import sys
 
+#cos類似度
 def cos_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
+#内積
 def inner_product(v1, v2):
     return np.dot(v1, v2)
 
+#ユークリッド距離
 def norm_vec(v1, v2):
-    test = np.ones((4,3)) * v2
-    #v3 = np.linalg.norm(test-v1)
-    #v3 = test-v1
+    v2_rep = np.ones((4,3)) * v2
 
     tmp = np.array([])
     for i in range(4):
-        #v3 = np.linalg.norm(test[i]-v1[i])
-        v3 = np.linalg.norm(test[i]-v1[i])
+        v3 = np.linalg.norm(v2_rep[i]-v1[i])
         tmp = np.append(tmp, v3)
     
     return tmp.reshape(-1, 1)
 
+#cos類似度指標による色検出
 def similarity_calculate(comparison_arrays, lab_arrays):
     for lab_array in lab_arrays:
         lab_array = np.array([lab_array])
@@ -40,6 +41,7 @@ def similarity_calculate(comparison_arrays, lab_arrays):
         print("推論結果: ", max_val, class_name)
     print("=======\n")
 
+#ユークリッド距離指標による色検出
 def similarity_calculate_norm(comparison_arrays, lab_arrays):
     result_diff_val = 1000 #1000はdummy data
     result_label = ""

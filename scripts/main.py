@@ -27,7 +27,7 @@ def main(img):
         colors = (clt.cluster_centers_).astype("uint8")
         prob = hist.reshape(-1, 1)
         print("RGB座標：", colors)
-        print("確率   ：", prob)
+        print("割合   ：", prob)
         
         plt.figure()
         plt.axis("off")
