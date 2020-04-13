@@ -9,7 +9,7 @@ from skimage.color import rgb2lab
 from utils.data_loader import load_image, color_list
 from utils.hist import centroid_histogram
 from utils.visualize import plot_colors
-from utils.similarity import cos_sim, similarity_calculate
+from utils.similarity import cos_sim, similarity_calculate, similarity_calculate_norm
 
 def main(img):
     cmp_lab_arr = color_list()
@@ -44,7 +44,8 @@ def main(img):
 
         ######################
         #### 類似度計算計算 ####
-        similarity_calculate(cmp_lab_arr, bar_lab[0])
+        similarity_calculate_norm(cmp_lab_arr, bar_lab[0])
+        #similarity_calculate(cmp_lab_arr, bar_lab[0])
         #####################
 
 if __name__ == "__main__":
