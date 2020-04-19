@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 import os
 import sys
 from sklearn.cluster import KMeans
-from skimage.color import rgb2lab
+from skimage.color import rgb2lab, lab2rgb
 from mpl_toolkits.mplot3d import Axes3D
 
 from utils.data_loader import load_image, color_list
 from utils.hist import centroid_histogram
-from utils.visualize import plot_colors, plot
+from utils.visualize import plot_colors, plot, plot_lab_3candidates, plot_lab_final_candidates
 from utils.similarity import cos_sim, similarity_calculate, similarity_calculate_norm
 
 label_dict = {"red" : 0, "blue" : 1, "yellow" : 2, "unknown" : 3}
@@ -46,11 +46,6 @@ def accuracy(tl_label, pre_res):
 def main(img, label_arrays):
     cmp_lab_arr = color_list()
 
-    ###print(img.shape)
-    ###img_reshape = img.reshape(img.shape[0], -1, img.shape[3])
-    ###print(img_reshape.shape)
-    ###sys.exit()
-
     #グラフの枠を作っていく
     fig = plt.figure()
     ax = Axes3D(fig)
@@ -74,52 +69,35 @@ def main(img, label_arrays):
         
         colors = (clt.cluster_centers_).astype("uint8")
         prob = hist.reshape(-1, 1)
-        print("RGB座標：", colors)
+        print("RGB座標：", colors, colors.shape)
         print("割合   ：", prob)
-        
-        ###plt.figure()
-        ###plt.axis("off")
-        ###plt.imshow(bar) #debug用
-        ###plt.show()      #debug用
-        
+                
         res = colors[np.newaxis, :,:]
         bar_lab = rgb2lab(res) # LAB値に変換
 
-        print("&&&&&&&&&&&&&&&&&&")
-        print("Lab座標：", bar_lab[0])
+        print("Lab座標：", bar_lab[0], bar_lab.shape, bar_lab[0].shape)
         idx = np.where( (np.abs(bar_lab[0][:, 1]) > 10) | (np.abs(bar_lab[0][:, 2]) > 10) )
-        aaatmp = bar_lab[0][idx]
-        ###print(aaatmp.shape, aaatmp)
-        ###plt.figure()
-        ###plt.axis("off")
-        ###plt.imshow(aaatmp) #debug用
-        ###plt.show()      #debug用
+        lab_candidate = bar_lab[0][idx]
 
-        #print(aaatmp.shape, aaatmp)
-        if aaatmp.shape[0] == 0:
+        if lab_candidate.shape[0] == 0:
             continue
+
+        #plot_lab_3candidates(bar)   #debug用 --> クラスタリング結果の3つの候補を出す。
+        #plot_lab_final_candidates(lab_candidate) #debug用 --> クラスタリング結果の3つの候補のうち最終的な候補を出す。上記のidxにより抽出。
         label_arrays_tmp = np.append(label_arrays_tmp, num)
-        print("&&&&&&&&&&&&&&&&&&")
-        print(bar_lab[0].shape, aaatmp.shape)
-        print("比較対象")
-        print(cmp_lab_arr)
         #################
 
         ######################
         #### 類似度計算計算 ####
         #pre_label, tmptmp  = similarity_calculate_norm(cmp_lab_arr, bar_lab[0])
-        pre_label, tmptmp = similarity_calculate(cmp_lab_arr, aaatmp)
-        
+        pre_label, tmptmp = similarity_calculate(cmp_lab_arr, lab_candidate)
         #####################
-        print('$$$$$$$$')
+
         plot(tmptmp, label, fig, ax)
         print("----------", pre_label)
-
         res_array = np.append(res_array, label_dict[pre_label])
 
     plt.show()
-    #print(label_arrays.shape, label_arrays_tmp)
-    #print(label_arrays[label_arrays_tmp.astype(np.int)].shape, res_array.shape)
 
     accuracy(label_arrays[label_arrays_tmp.astype(np.int)], res_array)
     #accuracy(label_arrays, res_array)

@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import sys
 import matplotlib.pyplot as plt
+from skimage.color import lab2rgb
 
 def norm2d(x,y,sigma):
     Z = np.exp(-(x**2 + y**2) / (2 * sigma**2)) / (2 * np.pi * sigma**2)
@@ -37,3 +38,16 @@ def plot(lab, label, fig, ax):
         ax.scatter(lab[0][1], lab[0][2], lab[0][0], s = 10, c = "yellow")
     else:
         ax.scatter(lab[0][1], lab[0][2], lab[0][0], s = 10, c = "black")
+
+def plot_lab_3candidates(bar):
+    plt.figure()
+    plt.axis("off")
+    plt.imshow(bar) #debug用
+    plt.show()      #debug用
+
+def plot_lab_final_candidates(lab):
+    res_debug = lab2rgb(lab[np.newaxis, :,:]) #debug用
+    plt.figure()
+    plt.axis("off")
+    plt.imshow(res_debug) #debug用
+    plt.show()            #debug用

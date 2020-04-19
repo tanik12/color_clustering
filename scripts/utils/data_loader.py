@@ -7,9 +7,8 @@ import sys
 def load_image(image_file):
     file_name_lists = os.listdir(image_file)
     label_arrays = []
-    #label_arrays = color_label_list(file_name_lists)
+
     # cv2 load images as BGR
-    #image_bgr=[cv2.imread(image_file+'/'+i) for i in file_name_lists]
     image_bgr = []
     for i in file_name_lists:
         img = cv2.imread(image_file+'/'+i)
