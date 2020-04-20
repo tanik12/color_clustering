@@ -11,39 +11,10 @@ from utils.data_loader import load_image, color_list
 from utils.hist import centroid_histogram
 from utils.visualize import plot_colors, plot, plot_lab_3candidates, plot_lab_final_candidates
 from utils.similarity import cos_sim, similarity_calculate, similarity_calculate_norm
-
-label_dict = {"red" : 0, "blue" : 1, "yellow" : 2, "unknown" : 3}
-label_list_ = [0, 0, 0, 0] 
-
-def accuracy(tl_label, pre_res):
-    count = 0
-    count11 = 0
-    count2222 = 0
-    for tl, pre in zip(tl_label, pre_res):
-        if int(tl) == int(pre):
-            count += 1
-            if int(tl) == int(pre) and int(pre) != 3:
-                count11 += 1
-        else:
-            if tl == 0:
-                label_list_[0] += 1
-            elif tl == 1:
-                label_list_[1] += 1
-            elif tl == 2:
-                label_list_[2] += 1
-            elif tl == 3:
-                label_list_[3] += 1
-
-        if tl != 3:
-            count2222 += 1
-
-    print("正解率：", str(count) + "/" + str(len(tl_label)))
-    print("精度は", count/len(tl_label) * 100, "%です。")
-    print("総数：", len(tl_label))
-    print("間違い label_list_ : ", label_list_)
-    print("あわわわ label_list_ : ", count11/count2222 )
+from utils.evaluation import accuracy
 
 def main(img, label_arrays):
+    label_dict = {"red" : 0, "blue" : 1, "yellow" : 2, "unknown" : 3}
     cmp_lab_arr = color_list()
 
     #グラフの枠を作っていく
@@ -89,15 +60,15 @@ def main(img, label_arrays):
 
         ######################
         #### 類似度計算計算 ####
-        #pre_label, tmptmp  = similarity_calculate_norm(cmp_lab_arr, bar_lab[0])
-        pre_label, tmptmp = similarity_calculate(cmp_lab_arr, lab_candidate)
+        #pre_label, lab_info  = similarity_calculate_norm(cmp_lab_arr, lab_candidate)
+        pre_label, lab_info = similarity_calculate(cmp_lab_arr, lab_candidate)
         #####################
 
-        plot(tmptmp, label, fig, ax)
+        plot(lab_info, label, fig, ax)
         print("----------", pre_label)
         res_array = np.append(res_array, label_dict[pre_label])
 
-    plt.show()
+    ###plt.show()
 
     accuracy(label_arrays[label_arrays_tmp.astype(np.int)], res_array)
     #accuracy(label_arrays, res_array)
@@ -105,7 +76,7 @@ def main(img, label_arrays):
 if __name__ == "__main__":
     #img, label_arrays = load_image("/Users/gisen/git/color_clustering/data")
     img, label_arrays = load_image("/Users/gisen/git/color_clustering/data_evaluation")
-    print("aaa; ", label_arrays.shape)
+    print("教師ラベルの総数: ", label_arrays.shape)
     img = np.reshape(img, (len(img),150,150,3))
     b,w,h,c = img.shape
     main(img, label_arrays)

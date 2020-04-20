@@ -47,7 +47,7 @@ def norm_vec(v1, v2):
 def similarity_calculate(comparison_arrays, lab_arrays):
     result_diff_val = 0 #0はdummy data
     result_label = ""
-    tmptmp = np.zeros((3,1))
+    lab_info = np.zeros((3,1))
     for lab_array in lab_arrays:
         lab_array = np.array([lab_array])
 
@@ -55,13 +55,10 @@ def similarity_calculate(comparison_arrays, lab_arrays):
         max_val = np.max(tmp, axis=0)
         max_index = np.argmax(tmp, axis=0)
 
-        #if max_index < 2 and max_val >= 0.4:
         if max_index < 1 and max_val >= 0.2:
             class_name = "red"
-        #elif (max_index >= 2 and max_index < 4) and max_val >= 0.4:
         elif (max_index >= 1 and max_index < 3) and max_val >= 0.2:
             class_name = "blue"
-        #elif (max_index >= 4 and max_index < 5) and max_val >= 0.4:
         elif (max_index >= 3 and max_index < 4) and max_val >= 0.2:
             class_name = "yellow"
         else:
@@ -70,32 +67,24 @@ def similarity_calculate(comparison_arrays, lab_arrays):
         if result_diff_val < max_val[0]:
             result_diff_val = max_val[0]
             result_label = class_name
-            tmptmp = lab_array.reshape(3, 1)
+            lab_info = lab_array.reshape(3, 1)
             if max_val < 0.2:
                 result_label = "unknown"
         
         if result_label == "":
             result_label = "unknown"
 
-###        if max_index == 0 and max_val >= 0.45:
-###            class_name = "red"
-###        elif (max_index == 1 or max_index == 2) and max_val >= 0.45:
-###            class_name = "blue"
-###        elif max_index == 3 and max_val >= 0.45:
-###            class_name = "yellow"
-###        else:
-###            class_name = "unknown"
-
         print("推論結果: ", max_val, class_name)
     print("=======\n")
     print("最終的な色識別の判定結果：", result_label)
     print("=======\n")
-    return result_label, tmptmp
+    return result_label, lab_info
 
 #ユークリッド距離指標による色検出
 def similarity_calculate_norm(comparison_arrays, lab_arrays):
     result_diff_val = 1000 #1000はdummy data
     result_label = ""
+    tmptmp = np.zeros((3,1))
     for lab_array in lab_arrays:
         lab_array = np.array([lab_array])
 
@@ -105,9 +94,9 @@ def similarity_calculate_norm(comparison_arrays, lab_arrays):
 
         if min_index < 1:
             class_name = "red"
-        elif 1 <= min_index < 3:
+        elif (min_index >= 1 and min_index < 3):
             class_name = "blue"
-        elif 3 <= min_index < 5:
+        elif (min_index >= 3 and min_index < 4):
             class_name = "yellow"
         else:
             class_name = "unknown"
@@ -116,7 +105,7 @@ def similarity_calculate_norm(comparison_arrays, lab_arrays):
             result_diff_val = min_val[0]
             result_label = class_name
             tmptmp = lab_array.reshape(3, 1)
-            if result_diff_val > 80:
+            if result_diff_val >= 60:
                 result_label = "unknown"
 
         print("推論結果: ", min_val, class_name)
