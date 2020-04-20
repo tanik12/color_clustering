@@ -1,6 +1,14 @@
 import numpy as np
 import cv2
 import sys
+import matplotlib.pyplot as plt
+from skimage.color import lab2rgb
+
+def norm2d(x,y,sigma):
+    Z = np.exp(-(x**2 + y**2) / (2 * sigma**2)) / (2 * np.pi * sigma**2)
+    #Z = np.where(Z > 0.003, 1000, Z)
+
+    return Z
 
 def plot_colors(hist, centroids):
     bar = np.zeros((50, 300, 3), dtype="uint8")
@@ -14,3 +22,32 @@ def plot_colors(hist, centroids):
         startX = endX
     #opencvによって色付けした結果をreturn
     return bar
+
+#RGB情報の可視化(3D)max_index >= 3 and max_index < 4)
+def plot(lab, label, fig, ax):
+    print(lab.reshape(1,-1), int(label))
+    lab = lab.reshape(1,-1)
+    label = int(label)
+    aaa = norm2d(lab[0][1], lab[0][2], 0.5)
+
+    if label == 0:
+        ax.scatter(lab[0][1], lab[0][2], lab[0][0], s = 10, c = "red")
+    elif label==1:
+        ax.scatter(lab[0][1], lab[0][2], lab[0][0], s = 10, c = "blue")
+    elif label == 2:
+        ax.scatter(lab[0][1], lab[0][2], lab[0][0], s = 10, c = "yellow")
+    else:
+        ax.scatter(lab[0][1], lab[0][2], lab[0][0], s = 10, c = "black")
+
+def plot_lab_3candidates(bar):
+    plt.figure()
+    plt.axis("off")
+    plt.imshow(bar) #debug用
+    plt.show()      #debug用
+
+def plot_lab_final_candidates(lab):
+    res_debug = lab2rgb(lab[np.newaxis, :,:]) #debug用
+    plt.figure()
+    plt.axis("off")
+    plt.imshow(res_debug) #debug用
+    plt.show()            #debug用
