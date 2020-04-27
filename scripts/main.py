@@ -14,6 +14,7 @@ from utils.similarity import cos_sim, similarity_calculate, similarity_calculate
 from utils.evaluation import accuracy
 
 def main(img, label_arrays):
+    gif_flag = False
     label_dict = {"red" : 0, "blue" : 1, "yellow" : 2, "unknown" : 3}
     cmp_lab_arr = color_list()
 
@@ -67,6 +68,11 @@ def main(img, label_arrays):
         plot(lab_info, label, fig, ax)
         print("----------", pre_label)
         res_array = np.append(res_array, label_dict[pre_label])
+
+    if gif_flag:
+        for angle in range(0, 360):
+            ax.view_init(30, angle)
+            plt.savefig("figs/{0}_{1:03d}.jpg".format("res", angle))
 
     ###plt.show()
 
